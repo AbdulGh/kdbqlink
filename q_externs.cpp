@@ -12,11 +12,12 @@ extern "C" {
 
     kl::KernelConnection& kc = kl::KernelConnection::singleton();
 
-    std::cout << "Hello" << std::endl;
-    std::cout << in_str->n << std::endl;
-    std::cout << std::string_view{in_str->s, (unsigned long)in_str->n} << std::endl;
+    std::string_view sv {
+      reinterpret_cast<const char*>(in_str->G0),
+      static_cast<size_t>(in_str->n)
+    };
 
-    kc.write(in_str->s);
+    kc.write(sv);
     std::optional<std::size_t> res = kc.read();
 
     if (!res) {

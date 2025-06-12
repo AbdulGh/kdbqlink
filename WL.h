@@ -54,10 +54,14 @@ class KernelConnection {
     return kc;
   }
 
-  void write(const std::string& to_evaluate) {
+  void write(const std::string_view to_evaluate) {
     WSPutFunction(lp, "EvaluatePacket", 1);
     WSPutFunction(lp, "ToExpression", 1);
-    WSPutString(lp, to_evaluate.c_str());
+    WSPutByteString(
+        lp,
+        reinterpret_cast<const unsigned char*>(to_evaluate.data()),
+        std::size(to_evaluate)
+    );
     WSEndPacket(lp);
   }
 
